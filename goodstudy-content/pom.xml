@@ -11,5 +11,8 @@
     </parent>
     <packaging>pom</packaging>
     <artifactId>goodstudy-content</artifactId>
-
+    <modules>
+        <module>goodstudy-content-api</module>
+        <module>goodstudy-content-model</module>
+    </modules>
 </project>
