@@ -18,4 +18,17 @@
         id, name, label, parentid, is_show, orderby, is_leaf
     </sql>
 
+    <select id="selectTreeNodes" resultType="com.goodstudy.content.model.dto.CourseCategoryTreeDto" parameterType="string">
+        WITH RECURSIVE cte AS (
+            SELECT id, name, label, parentid, is_show, orderby, is_leaf
+            FROM course_category
+            WHERE id = #{id}
+            UNION ALL
+            SELECT cc.id, cc.name, cc.label, cc.parentid, cc.is_show, cc.orderby, cc.is_leaf
+            FROM course_category cc
+                     JOIN cte ON cc.parentid = cte.id
+        )
+        SELECT id, name, label, parentid, is_show, orderby, is_leaf FROM cte ORDER BY id, orderby
+    </select>
+
 </mapper>

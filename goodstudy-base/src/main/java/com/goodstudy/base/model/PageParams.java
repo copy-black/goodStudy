@@ -1,4 +1,4 @@
-package com.goodstudy.model;
+package com.goodstudy.base.model;
 
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;

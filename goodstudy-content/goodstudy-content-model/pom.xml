@@ -16,7 +16,7 @@
             <artifactId>goodstudy-base</artifactId>
             <version>0.0.1-SNAPSHOT</version>
         </dependency>
-<!--        存在mybatisplus注解添加相关注解保证不报错-->
+        <!--存在mybatisplus注解添加相关注解保证不报错-->
         <dependency>
             <groupId>com.baomidou</groupId>
             <artifactId>mybatis-plus-annotation</artifactId>
@@ -32,5 +32,4 @@
             <artifactId>lombok</artifactId>
         </dependency>
     </dependencies>
-
 </project>

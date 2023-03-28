@@ -1,4 +1,4 @@
-package com.goodstudy.model.config;
+package com.goodstudy.base.config;
 
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
