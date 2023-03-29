@@ -13,7 +13,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
- * Description:
+ * Description: 课程分类管理业务接口实现类
  *
  * @Author: Jack
  * Date: 2023/03/27 11:36
@@ -27,27 +27,31 @@ public class CourseCategoryServiceImpl implements CourseCategoryService {
 
     @Override
     public List<CourseCategoryTreeDto> queryTreeNodes(String id) {
+        // 获取到所有的课程分类
         List<CourseCategoryTreeDto> courseCategoryTreeDtos = courseCategoryMapper.selectTreeNodes(id);
+
         // 将list转map, 以备使用,排除根节点
-        Map<String, CourseCategoryTreeDto> courseCategoryTreeDtoMap = courseCategoryTreeDtos.stream()
-                .filter(item -> !id.equals(item.getId()))
+        Map<String, CourseCategoryTreeDto> collect = courseCategoryTreeDtos.stream().filter(item -> !id.equals(item.getId()))
                 .collect(Collectors.toMap(CourseCategoryTreeDto::getId, Function.identity()));
 
-        //最终返回的list
+        // 创建返回结果
         List<CourseCategoryTreeDto> result = new ArrayList<>();
-        // 依次遍历每个元素,排除根节点
-        courseCategoryTreeDtos.stream().filter(item -> !id.equals(item.getId())).forEach(item -> {
-            if(item.getParentid().equals(id)){
-                result.add(item);
+        // 遍历所有的课程分类
+        courseCategoryTreeDtos.stream().filter(item -> !id.equals(item.getId())).forEach(item ->{
+            // 判断item.getParentId()是否等于id
+            if (item.getParentid().equals(id)) {
+                // 如果等于,则将item添加到result中
+                result.add(item);// 相当于 id 下面的子节点
             }
-            //找到当前节点的父节点
-            CourseCategoryTreeDto parent = courseCategoryTreeDtoMap.get(item.getParentid());
-            //如果父节点不为空,将当前节点放入父节点的children中
+            // 得到当前节点父节点
+            CourseCategoryTreeDto parent = collect.get(item.getParentid());
+            // 判断父节点是否为空
             if (parent != null) {
+                // 判断子节点是否为空
                 if (parent.getChildrenTreeNodes() == null) {
-                    parent.setChildrenTreeNodes(new ArrayList<CourseCategoryTreeDto>());
+                    parent.setChildrenTreeNodes(new ArrayList<>());
                 }
-                // 下边开始往ChildrenTreeNodes属性中放子节点
+                // 将item添加到父节点的子节点中
                 parent.getChildrenTreeNodes().add(item);
             }
         });

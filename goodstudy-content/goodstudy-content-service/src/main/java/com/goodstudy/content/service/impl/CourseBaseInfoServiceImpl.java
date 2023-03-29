@@ -8,6 +8,7 @@ import com.goodstudy.content.mapper.CourseCategoryMapper;
 import com.goodstudy.content.mapper.CourseMarketMapper;
 import com.goodstudy.content.model.dto.AddCourseDto;
 import com.goodstudy.content.model.dto.CourseBaseInfoDto;
+import com.goodstudy.content.model.dto.EditCourseDto;
 import com.goodstudy.content.model.dto.QueryCourseParamsDto;
 import com.goodstudy.content.model.po.CourseBase;
 import com.goodstudy.content.model.po.CourseCategory;
@@ -73,6 +74,7 @@ public class CourseBaseInfoServiceImpl implements CourseBaseInfoService {
     @Transactional
     @Override
     public CourseBaseInfoDto createCourseBase(Long companyId, AddCourseDto addCourseDto) {
+
         // 校验合法性
         if (StringUtils.isBlank(addCourseDto.getTeachmode())) {
             throw new GoodStudyException("课程模型不能为空");
@@ -139,13 +141,13 @@ public class CourseBaseInfoServiceImpl implements CourseBaseInfoService {
                 throw new GoodStudyException("课程为收费价格不能为空且必须大于0");
             }
         }
-        CourseMarket courseMarketObj  = courseMarketMapper.selectById(courseMarket.getId());
-        if (courseMarketObj  == null) {
-           return courseMarketMapper.insert(courseMarket);
+        CourseMarket courseMarketObj = courseMarketMapper.selectById(courseMarket.getId());
+        if (courseMarketObj == null) {
+            return courseMarketMapper.insert(courseMarket);
         } else {
-            BeanUtils.copyProperties(courseMarket,courseMarketObj);
+            BeanUtils.copyProperties(courseMarket, courseMarketObj);
             courseMarketObj.setId(courseMarket.getId());
-            return courseMarketMapper.insert(courseMarketObj);
+            return courseMarketMapper.updateById(courseMarketObj);
         }
     }
 
@@ -157,7 +159,7 @@ public class CourseBaseInfoServiceImpl implements CourseBaseInfoService {
         CourseMarket courseMarket = courseMarketMapper.selectById(id);
         CourseBaseInfoDto courseBaseInfoDto = new CourseBaseInfoDto();
 
-        if(courseMarket != null) {
+        if (courseMarket != null) {
             BeanUtils.copyProperties(courseMarket, courseBaseInfoDto);
         }
         BeanUtils.copyProperties(courseBase, courseBaseInfoDto);
@@ -174,6 +176,66 @@ public class CourseBaseInfoServiceImpl implements CourseBaseInfoService {
         }
         courseBaseInfoDto.setStName(courseCategoryBySt.getName());
         return courseBaseInfoDto;
+    }
+
+    @Transactional
+    @Override
+    public CourseBaseInfoDto updateCourseBase(Long companyId, EditCourseDto editCourseDto) {
+        // 校验合法性
+        if (StringUtils.isBlank(editCourseDto.getTeachmode())) {
+            throw new GoodStudyException("课程模型不能为空");
+        }
+        if (StringUtils.isBlank(editCourseDto.getName())) {
+            throw new GoodStudyException("课程名称不能为空");
+        }
+        if (StringUtils.isBlank(editCourseDto.getMt())) {
+            throw new GoodStudyException("课程分类不能为空");
+        }
+        if (StringUtils.isBlank(editCourseDto.getSt())) {
+            throw new GoodStudyException("课程分类不能为空");
+        }
+        if (StringUtils.isBlank(editCourseDto.getGrade())) {
+            throw new GoodStudyException("课程等级不能为空");
+        }
+        if (StringUtils.isBlank(editCourseDto.getGrade())) {
+            throw new GoodStudyException("课程等级不能为空");
+        }
+        if (StringUtils.isBlank(editCourseDto.getUsers())) {
+            throw new GoodStudyException("适用人群不能为空");
+        }
+        if (StringUtils.isBlank(editCourseDto.getCharge())) {
+            throw new GoodStudyException("费用不能为空");
+        }
+
+        Long courseId = editCourseDto.getId();
+        CourseBase courseBase = courseBaseMapper.selectById(courseId);
+        if (courseBase == null) {
+            throw new GoodStudyException("课程信息不存在");
+        }
+
+        // 校验本机构只能修改本机构的课程
+        if (!companyId.equals(courseBase.getCompanyId())) {
+            throw new GoodStudyException("不能修改其他机构的课程");
+        }
+
+        // 将填写的课程信息赋值给新增对象
+        BeanUtils.copyProperties(editCourseDto, courseBase);
+        courseBase.setChangeDate(LocalDateTime.now());
+        // 插入数据库
+        int insert = courseBaseMapper.updateById(courseBase);
+        if (insert != 1) {
+            throw new GoodStudyException("修改课程信息失败");
+        }
+        // 保存课程营销信息
+        CourseMarket courseMarket = new CourseMarket();
+        BeanUtils.copyProperties(editCourseDto, courseMarket);
+        int i = saveCourseMarket(courseMarket);
+        if (i != 1) {
+            throw new GoodStudyException("修改课程营销信息失败");
+        }
+        //从数据库查询课程的详细信息，包括两部分
+        CourseBaseInfoDto courseBaseInfo = getCourseBaseInfo(courseId);
+        return courseBaseInfo;
     }
 
 }

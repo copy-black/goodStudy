@@ -2,6 +2,7 @@ package com.goodstudy.content.service;
 
 import com.goodstudy.content.model.dto.AddCourseDto;
 import com.goodstudy.content.model.dto.CourseBaseInfoDto;
+import com.goodstudy.content.model.dto.EditCourseDto;
 import com.goodstudy.content.model.dto.QueryCourseParamsDto;
 import com.goodstudy.content.model.po.CourseBase;
 import com.goodstudy.base.model.PageParams;
@@ -43,4 +44,32 @@ public interface CourseBaseInfoService {
      * @creed Talk is cheap, show me the comment !!!
      */
     CourseBaseInfoDto createCourseBase(Long companyId, AddCourseDto addCourseDto);
+
+    /**
+     * 根据课程id查询课程基础信息
+     *
+     * @param courseId java.lang.Long
+     * @return com.goodstudy.content.model.dto.CourseBaseInfoDto
+     * @author Jack
+     * @date 2023/3/29 15:48
+     * @update_by Jack
+     * @update_at 2023/3/29 15:48
+     * @creed Talk is cheap, show me the comment !!!
+     */
+    CourseBaseInfoDto getCourseBaseInfo(Long courseId);
+
+    /**
+     * 修改课程基本信息
+     *
+     * @param editCourseDto com.goodstudy.content.model.dto.EditCourseDto
+     * @return com.goodstudy.content.model.dto.CourseBaseInfoDto
+     * @author Jack
+     * @date 2023/3/29 16:09
+     * @update_by Jack
+     * @update_at 2023/3/29 16:09
+     * @creed Talk is cheap, show me the comment !!!
+     */
+    CourseBaseInfoDto updateCourseBase(Long companyId, EditCourseDto editCourseDto);
+
+
 }
