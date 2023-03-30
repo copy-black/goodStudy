@@ -1,18 +1,15 @@
 package com.goodstudy.content.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.goodstudy.base.exception.GoodStudyException;
-import com.goodstudy.content.mapper.CourseBaseMapper;
-import com.goodstudy.content.mapper.CourseCategoryMapper;
-import com.goodstudy.content.mapper.CourseMarketMapper;
+import com.goodstudy.content.mapper.*;
 import com.goodstudy.content.model.dto.AddCourseDto;
 import com.goodstudy.content.model.dto.CourseBaseInfoDto;
 import com.goodstudy.content.model.dto.EditCourseDto;
 import com.goodstudy.content.model.dto.QueryCourseParamsDto;
-import com.goodstudy.content.model.po.CourseBase;
-import com.goodstudy.content.model.po.CourseCategory;
-import com.goodstudy.content.model.po.CourseMarket;
+import com.goodstudy.content.model.po.*;
 import com.goodstudy.content.service.CourseBaseInfoService;
 import com.goodstudy.base.model.PageParams;
 import com.goodstudy.base.model.PageResult;
@@ -21,6 +18,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -43,6 +41,12 @@ public class CourseBaseInfoServiceImpl implements CourseBaseInfoService {
 
     @Autowired
     private CourseCategoryMapper courseCategoryMapper;
+
+    @Autowired
+    private TeachplanMapper teachplanMapper;
+
+    @Autowired
+    private CourseTeacherMapper courseTeacherMapper;
 
 
     @Override
@@ -236,6 +240,43 @@ public class CourseBaseInfoServiceImpl implements CourseBaseInfoService {
         //从数据库查询课程的详细信息，包括两部分
         CourseBaseInfoDto courseBaseInfo = getCourseBaseInfo(courseId);
         return courseBaseInfo;
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void deleteCourseBase(Long courseId) {
+        // 校验合法性
+        CourseBase courseBase = courseBaseMapper.selectById(courseId);
+        if (courseBase == null) {
+            throw new GoodStudyException("课程信息不存在");
+        }
+        // 删除课程信息
+        int i = courseBaseMapper.deleteById(courseId);
+        // 删除课程营销信息
+        int i1 = courseMarketMapper.deleteById(courseId);
+        if (i != 1 || i1 != 1) {
+            throw new GoodStudyException("删除课程信息失败");
+        }
+        //课程计划关联信息
+        QueryWrapper<Teachplan> coursePlanQueryWrapper = new QueryWrapper<>();
+        coursePlanQueryWrapper.eq("course_id", courseId);
+        List<Teachplan> teachplans = teachplanMapper.selectList(coursePlanQueryWrapper);
+        if (!CollectionUtils.isEmpty(teachplans)) {
+            int planCount = teachplanMapper.delete(coursePlanQueryWrapper);
+            if (planCount != teachplans.size()) {
+                throw new GoodStudyException("删除课程计划信息失败");
+            }
+        }
+        //删除课程老师关联信息
+        QueryWrapper<CourseTeacher> courseTeacherQueryWrapper = new QueryWrapper<>();
+        courseTeacherQueryWrapper.eq("course_id", courseId);
+        List<CourseTeacher> courseTeachers = courseTeacherMapper.selectList(courseTeacherQueryWrapper);
+        if (!CollectionUtils.isEmpty(courseTeachers)) {
+            int teacherCount = courseTeacherMapper.delete(courseTeacherQueryWrapper);
+            if (teacherCount != courseTeachers.size()) {
+                throw new GoodStudyException("删除课程老师关联信息失败");
+            }
+        }
     }
 
 }

@@ -101,5 +101,22 @@ public class CourseBaseInfoController {
         return courseBaseInfoService.updateCourseBase(companyId,editCourseDto);
     }
 
+    /**
+     * 删除课程接口
+     *
+     * @param courseId java.lang.Long
+     * @return void
+     * @author Jack
+     * @date 2023/3/30 22:54
+     * @update_by Jack
+     * @update_at 2023/3/30 22:54
+     * @creed Talk is cheap, show me the comment !!!
+     */
+    @ApiOperation("删除课程接口")
+    @DeleteMapping("/course/{courseId}")
+    public void deleteCourseBase(Long courseId) {
+        courseBaseInfoService.deleteCourseBase(courseId);
+    }
+
 
 }

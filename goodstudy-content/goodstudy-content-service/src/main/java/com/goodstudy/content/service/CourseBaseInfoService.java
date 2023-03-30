@@ -71,5 +71,16 @@ public interface CourseBaseInfoService {
      */
     CourseBaseInfoDto updateCourseBase(Long companyId, EditCourseDto editCourseDto);
 
-
+    /**
+     * 删除课程基本信息
+     *
+     * @param courseId java.lang.Long
+     * @return void
+     * @author Jack
+     * @date 2023/3/30 22:55
+     * @update_by Jack
+     * @update_at 2023/3/30 22:55
+     * @creed Talk is cheap, show me the comment !!!
+     */
+    void deleteCourseBase(Long courseId);
 }
