@@ -52,4 +52,30 @@ public interface TeachplanService {
      * @creed Talk is cheap, show me the comment !!!
      */
     void deleteTeachplan(Long teachplanId);
+
+    /**
+     * 课程计划上移
+     *
+     * @param teacherplanId java.lang.Long
+     * @return void
+     * @author Jack
+     * @date 2023/3/30 15:57
+     * @update_by Jack
+     * @update_at 2023/3/30 15:57
+     * @creed Talk is cheap, show me the comment !!!
+     */
+    void moveUpSubmit(Long teacherplanId);
+
+    /**
+     * 课程计划下移
+     *
+     * @param teacherplanId java.lang.Long
+     * @return void
+     * @author Jack
+     * @date 2023/3/30 16:20
+     * @update_by Jack
+     * @update_at 2023/3/30 16:20
+     * @creed Talk is cheap, show me the comment !!!
+     */
+    void moveDownSubmit(Long teacherplanId);
 }

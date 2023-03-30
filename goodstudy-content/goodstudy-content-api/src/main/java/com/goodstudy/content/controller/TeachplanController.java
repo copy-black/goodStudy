@@ -77,4 +77,38 @@ public class TeachplanController {
         teachplanService.deleteTeachplan(teachplanId);
     }
 
+    /**
+     * 课程计划上移
+     *
+     * @param teacherplanId java.lang.Long
+     * @return void
+     * @author Jack
+     * @date 2023/3/30 15:56
+     * @update_by Jack
+     * @update_at 2023/3/30 15:56
+     * @creed Talk is cheap, show me the comment !!!
+     */
+    @ApiOperation("课程计划上移")
+    @PostMapping("/teachplan/moveup/{teacherplanId}")
+    public void moveUpSubmit(@PathVariable Long teacherplanId) {
+        teachplanService.moveUpSubmit(teacherplanId);
+    }
+
+    /**
+     * 课程计划下移
+     *
+     * @param teacherplanId java.lang.Long
+     * @return void
+     * @author Jack
+     * @date 2023/3/30 15:56
+     * @update_by Jack
+     * @update_at 2023/3/30 15:56
+     * @creed Talk is cheap, show me the comment !!!
+     */
+    @ApiOperation("课程计划下移")
+    @PostMapping("/teachplan/movedown/{teacherplanId}")
+    public void moveDownSubmit(@PathVariable Long teacherplanId) {
+        teachplanService.moveDownSubmit(teacherplanId);
+    }
+
 }

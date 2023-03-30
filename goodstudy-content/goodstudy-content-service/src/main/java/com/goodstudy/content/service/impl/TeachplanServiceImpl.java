@@ -24,6 +24,10 @@ import java.util.List;
 @Service
 public class TeachplanServiceImpl implements TeachplanService {
 
+    public static final int TEACHPLAN_GRADE_ONE = 1;
+
+    public static final int TEACHPLAN_GRADE_TWO = 2;
+
     @Autowired
     private TeachplanMapper teachplanMapper;
 
@@ -58,28 +62,74 @@ public class TeachplanServiceImpl implements TeachplanService {
     public void deleteTeachplan(Long teachplanId) {
         // 删除大章节，大章节下有小章节时不允许删除
         Teachplan teachplan = teachplanMapper.selectById(teachplanId);
-        if (teachplan.getGrade().equals("1")) {
-            int teachplanCount = getTeachplanCount(teachplanId, teachplan.getCourseId());
-            if (teachplanCount > 0) {
-                throw new RuntimeException("该章节下有小章节，不允许删除");
-            } else {
-                // 删除大章节，大单节下没有小章节时可以正常删除
+        if (teachplan != null) {
+            if (teachplan.getGrade() == TEACHPLAN_GRADE_ONE) {
+                int teachplanCount = getTeachplanCount(teachplanId, teachplan.getCourseId());
+                if (teachplanCount > 0) {
+                    throw new RuntimeException("该章节下有小章节，不允许删除");
+                } else {
+                    // 删除大章节，大单节下没有小章节时可以正常删除
+                    teachplanMapper.deleteById(teachplanId);
+                    teachplanMediaMapper.delete(new LambdaQueryWrapper<TeachplanMedia>()
+                            .eq(TeachplanMedia::getTeachplanId, teachplanId));
+                }
+            }
+            // 删除小章节，同时将关联的信息进行删除，比如视频、媒资信息等
+            if (teachplan.getGrade() == TEACHPLAN_GRADE_TWO) {
                 teachplanMapper.deleteById(teachplanId);
+                // 删除小章节，同时将关联的信息进行删除，比如视频、媒资信息等
                 teachplanMediaMapper.delete(new LambdaQueryWrapper<TeachplanMedia>()
                         .eq(TeachplanMedia::getTeachplanId, teachplanId));
             }
+        } else {
+            throw new RuntimeException("该章节不存在");
         }
-        // 删除小章节，同时将关联的信息进行删除，比如视频、媒资信息等
-        if (teachplan.getGrade().equals("2")) {
-            teachplanMapper.deleteById(teachplanId);
-            // 删除小章节，同时将关联的信息进行删除，比如视频、媒资信息等
-            teachplanMediaMapper.delete(new LambdaQueryWrapper<TeachplanMedia>()
-                    .eq(TeachplanMedia::getTeachplanId, teachplanId));
+
+    }
+
+    @Override
+    public void moveUpSubmit(Long teacherplanId) {
+        Teachplan teachplan = teachplanMapper.selectById(teacherplanId);
+        if (teachplan != null) {
+            // 章节上移 更改排序
+            int orderby = teachplan.getOrderby();
+            teachplan.setOrderby(orderby - 1);
+            // 上一级的排序 加1
+            Teachplan teachplan1 = teachplanMapper.selectOne(new LambdaQueryWrapper<Teachplan>()
+                    .eq(Teachplan::getParentid, teachplan.getParentid())
+                    .eq(Teachplan::getCourseId, teachplan.getCourseId())
+                    .eq(Teachplan::getOrderby, orderby - 1));
+            teachplan1.setOrderby(orderby);
+            teachplanMapper.updateById(teachplan);
+            teachplanMapper.updateById(teachplan1);
+        } else {
+            throw new RuntimeException("该章节不存在");
+        }
+    }
+
+    @Override
+    public void moveDownSubmit(Long teacherplanId) {
+        Teachplan teachplan = teachplanMapper.selectById(teacherplanId);
+        if (teachplan != null) {
+            // 章节下移 更改排序
+            int orderby = teachplan.getOrderby();
+            teachplan.setOrderby(orderby + 1);
+            // 下一级的排序 减1
+            Teachplan teachplan1 = teachplanMapper.selectOne(new LambdaQueryWrapper<Teachplan>()
+                    .eq(Teachplan::getParentid, teachplan.getParentid())
+                    .eq(Teachplan::getCourseId, teachplan.getCourseId())
+                    .eq(Teachplan::getOrderby, orderby + 1));
+            teachplan1.setOrderby(orderby);
+            teachplanMapper.updateById(teachplan);
+            teachplanMapper.updateById(teachplan1);
+        } else {
+            throw new RuntimeException("该章节不存在");
         }
     }
 
     /**
      * 取出同父同级节点的课程计划数量
+     *
      * @param parentId
      * @param courseId
      */
