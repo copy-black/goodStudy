@@ -1,14 +1,13 @@
 package com.goodstudy.content.controller;
 
+import com.goodstudy.content.model.dto.SaveTeachplanDto;
 import com.goodstudy.content.model.dto.TeachplanDto;
 import com.goodstudy.content.service.TeachplanService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -42,6 +41,40 @@ public class TeachplanController {
     @GetMapping("/teachplan/{courseId}/tree-nodes")
     public List<TeachplanDto> listTreeNodes(@PathVariable Long courseId) {
         return teachplanService.findTeachplanTree(courseId);
+    }
+
+    /**
+     * 课程计划创建或修改
+     *
+     * @param saveTeachplanDto com.goodstudy.content.model.dto.saveTeachplanDto
+     * @return void
+     * @author Jack
+     * @date 2023/3/30 9:42
+     * @update_by Jack
+     * @update_at 2023/3/30 9:42
+     * @creed Talk is cheap, show me the comment !!!
+     */
+    @ApiOperation("课程计划创建或修改")
+    @PostMapping("/teachplan")
+    public void saveTeachplan(@RequestBody SaveTeachplanDto saveTeachplanDto) {
+        teachplanService.saveTeachplan(saveTeachplanDto);
+    }
+
+    /**
+     * 课程计划删除
+     *
+     * @param teachplanId java.lang.Long
+     * @return void
+     * @author Jack
+     * @date 2023/3/30 15:10
+     * @update_by Jack
+     * @update_at 2023/3/30 15:10
+     * @creed Talk is cheap, show me the comment !!!
+     */
+    @ApiOperation("课程计划删除")
+    @DeleteMapping("/teachplan/{teachplanId}")
+    public void deleteTeachplan(@PathVariable Long teachplanId) {
+        teachplanService.deleteTeachplan(teachplanId);
     }
 
 }
