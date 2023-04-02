@@ -75,8 +75,8 @@ public class CourseBaseInfoServiceImpl implements CourseBaseInfoService {
         return result;
     }
 
-    @Transactional
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public CourseBaseInfoDto createCourseBase(Long companyId, AddCourseDto addCourseDto) {
 
         // 校验合法性
@@ -182,8 +182,9 @@ public class CourseBaseInfoServiceImpl implements CourseBaseInfoService {
         return courseBaseInfoDto;
     }
 
-    @Transactional
+
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public CourseBaseInfoDto updateCourseBase(Long companyId, EditCourseDto editCourseDto) {
         // 校验合法性
         if (StringUtils.isBlank(editCourseDto.getTeachmode())) {
