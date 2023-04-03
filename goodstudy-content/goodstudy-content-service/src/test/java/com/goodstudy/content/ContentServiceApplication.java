@@ -11,8 +11,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  * Version: 1.0
  */
 @SpringBootApplication
-public class ContentApplication {
+public class ContentServiceApplication {
     public static void main(String[] args) {
-        SpringApplication.run(ContentApplication.class, args);
+        SpringApplication.run(ContentServiceApplication.class, args);
     }
 }
