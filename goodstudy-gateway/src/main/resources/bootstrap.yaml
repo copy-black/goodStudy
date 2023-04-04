@@ -1,6 +1,7 @@
+#微服务配置
 spring:
   application:
-    name: goodstudy-media-service
+    name: goodstudy-gateway
   cloud:
     nacos:
       server-addr: 192.168.101.65:8848
@@ -12,12 +13,9 @@ spring:
         group: goodstudy-project
         file-extension: yaml
         refresh-enabled: true
-      shared-configs:
-        - data-id: logging-${spring.profiles.active}.yaml
-          group: goodstudy-plus-common
-          refresh: true
+        shared-configs:
+          - data-id: logging-${spring.profiles.active}.yaml
+            group: goodstudy-plus-common
+            refresh: true
   profiles:
     active: dev
-
-
-
