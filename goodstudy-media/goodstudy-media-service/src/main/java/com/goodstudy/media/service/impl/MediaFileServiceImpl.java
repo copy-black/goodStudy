@@ -7,8 +7,10 @@ import com.goodstudy.base.model.PageParams;
 import com.goodstudy.base.model.PageResult;
 import com.goodstudy.base.model.RestResponse;
 import com.goodstudy.media.mapper.MediaFilesMapper;
+import com.goodstudy.media.mapper.MediaProcessMapper;
 import com.goodstudy.media.model.dto.UploadFileParamsDto;
 import com.goodstudy.media.model.dto.UploadFileResultDto;
+import com.goodstudy.media.model.po.MediaProcess;
 import com.goodstudy.media.service.MediaFileService;
 import com.goodstudy.media.model.dto.QueryMediaParamsDto;
 import com.goodstudy.media.model.po.MediaFiles;
@@ -62,6 +64,9 @@ public class MediaFileServiceImpl implements MediaFileService {
 
     @Autowired
     MediaFilesMapper mediaFilesMapper;
+
+    @Autowired
+    MediaProcessMapper mediaProcessMapper;
 
     @Override
     public PageResult<MediaFiles> queryMediaFiels(Long companyId, PageParams pageParams, QueryMediaParamsDto queryMediaParamsDto) {
@@ -195,6 +200,8 @@ public class MediaFileServiceImpl implements MediaFileService {
                 log.error("保存文件信息到数据库失败,{}", mediaFiles.toString());
                 GoodStudyException.cast("保存文件信息失败");
             }
+            // 添加到待处理任务表
+            addWaitingTask(mediaFiles);
             log.debug("保存文件信息到数据库成功,{}", mediaFiles.toString());
         }
         return mediaFiles;
@@ -266,7 +273,6 @@ public class MediaFileServiceImpl implements MediaFileService {
         return RestResponse.success(true);
     }
 
-
     @Override
     public RestResponse mergeChunk(Long companyId, String fileMd5, String fileName, int chunkTotal, UploadFileParamsDto uploadFileParamsDto) {
         // =====获取分块文件路径=====
@@ -331,6 +337,30 @@ public class MediaFileServiceImpl implements MediaFileService {
         //=====清除分块文件=====
         clearChunkFiles(chunkFileFolderPath, chunkTotal);
         return RestResponse.success(true);
+    }
+
+    /**
+     * 添加到待处理任务表
+     * @param media
+     */
+    private void addWaitingTask(MediaFiles media){
+        // 文件名称
+        String filename = media.getFilename();
+        // 文件扩展名
+        String fileExt = filename.substring(filename.lastIndexOf("."));
+        // 文件mimeType
+        String mimeType = getMimeType(fileExt);
+        // 如果是avi格式的视频文件，添加到待处理任务表
+        if (mimeType.equals("video/x-msvideo")) {
+            MediaProcess mediaProcess = new MediaProcess();
+            BeanUtils.copyProperties(media,mediaProcess);
+            // 未处理
+            mediaProcess.setStatus("1");
+            // 失败次数默认为0
+            mediaProcess.setFailCount(0);
+            mediaProcessMapper.insert(mediaProcess);
+        }
+
     }
 
     /**

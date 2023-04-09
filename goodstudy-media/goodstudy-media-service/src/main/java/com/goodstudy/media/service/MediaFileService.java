@@ -8,6 +8,8 @@ import com.goodstudy.media.model.dto.UploadFileParamsDto;
 import com.goodstudy.media.model.dto.UploadFileResultDto;
 import com.goodstudy.media.model.po.MediaFiles;
 
+import java.io.File;
+
 /**
  * @author Mr.M
  * @version 1.0
@@ -57,6 +59,32 @@ public interface MediaFileService {
      * @creed Talk is cheap, show me the comment !!!
      */
     MediaFiles addMediaFilesToDb(Long companyId, String fileMd5, UploadFileParamsDto uploadFileParamsDto, String bucket, String objectName);
+
+
+    /**
+     * 将文件上传到minio
+     *
+     * @param localFilePath 文件本地路径
+     * @param mimeType      媒体类型
+     * @param bucket        桶
+     * @param objectName    对象名
+     * @return
+     */
+    boolean addMediaFilesToMinIO(String localFilePath, String mimeType, String bucket, String objectName);
+
+    /**
+     * 下载文件
+     *
+     * @param bucket     java.lang.String
+     * @param objectName java.lang.String
+     * @return java.io.File
+     * @author Jack
+     * @date 2023/4/9 17:26
+     * @update_by Jack
+     * @update_at 2023/4/9 17:26
+     * @creed Talk is cheap, show me the comment !!!
+     */
+    File downloadFileFromMinIO(String bucket, String objectName);
 
     /**
      * 文件上传前检查文件 检查文件是否存在
