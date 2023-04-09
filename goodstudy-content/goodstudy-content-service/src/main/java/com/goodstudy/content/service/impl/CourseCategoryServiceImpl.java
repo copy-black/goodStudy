@@ -37,7 +37,7 @@ public class CourseCategoryServiceImpl implements CourseCategoryService {
         // 创建返回结果
         List<CourseCategoryTreeDto> result = new ArrayList<>();
         // 遍历所有的课程分类
-        courseCategoryTreeDtos.stream().filter(item -> !id.equals(item.getId())).forEach(item ->{
+        courseCategoryTreeDtos.stream().filter(item -> !id.equals(item.getId())).forEach(item -> {
             // 判断item.getParentId()是否等于id
             if (item.getParentid().equals(id)) {
                 // 如果等于,则将item添加到result中

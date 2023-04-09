@@ -93,6 +93,9 @@ public class TeachplanServiceImpl implements TeachplanService {
         if (teachplan != null) {
             // 章节上移 更改排序
             int orderby = teachplan.getOrderby();
+            if (orderby == 1) {
+                throw new RuntimeException("该章节已经是第一章节,无法上移");
+            }
             teachplan.setOrderby(orderby - 1);
             // 上一级的排序 加1
             Teachplan teachplan1 = teachplanMapper.selectOne(new LambdaQueryWrapper<Teachplan>()
@@ -113,6 +116,10 @@ public class TeachplanServiceImpl implements TeachplanService {
         if (teachplan != null) {
             // 章节下移 更改排序
             int orderby = teachplan.getOrderby();
+            // 最有一级的排序 不用下移
+            if (orderby == getTeachplanCount(teachplan.getParentid(), teachplan.getCourseId())) {
+                throw new RuntimeException("该章节已经是最后一章节,无法下移");
+            }
             teachplan.setOrderby(orderby + 1);
             // 下一级的排序 减1
             Teachplan teachplan1 = teachplanMapper.selectOne(new LambdaQueryWrapper<Teachplan>()

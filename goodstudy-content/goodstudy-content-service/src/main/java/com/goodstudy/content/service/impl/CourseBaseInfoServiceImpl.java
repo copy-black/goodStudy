@@ -139,7 +139,7 @@ public class CourseBaseInfoServiceImpl implements CourseBaseInfoService {
         if (StringUtils.isBlank(charge)) {
             throw new GoodStudyException("收费规则没有选择");
         }
-        //收费规则为收费
+        // 收费规则为收费
         if (charge.equals("201001")) {
             if (courseMarket.getPrice() == null || courseMarket.getPrice().floatValue() <= 0) {
                 throw new GoodStudyException("课程为收费价格不能为空且必须大于0");

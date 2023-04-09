@@ -2,6 +2,7 @@ package com.goodstudy.media.service;
 
 import com.goodstudy.base.model.PageParams;
 import com.goodstudy.base.model.PageResult;
+import com.goodstudy.base.model.RestResponse;
 import com.goodstudy.media.model.dto.QueryMediaParamsDto;
 import com.goodstudy.media.model.dto.UploadFileParamsDto;
 import com.goodstudy.media.model.dto.UploadFileResultDto;
@@ -23,7 +24,7 @@ public interface MediaFileService {
      * @author Mr.M
      * @date 2022/9/10 8:57
      */
-    public PageResult<MediaFiles> queryMediaFiels(Long companyId, PageParams pageParams, QueryMediaParamsDto queryMediaParamsDto);
+    PageResult<MediaFiles> queryMediaFiels(Long companyId, PageParams pageParams, QueryMediaParamsDto queryMediaParamsDto);
 
     /**
      * 上传文件
@@ -55,5 +56,66 @@ public interface MediaFileService {
      * @update_at 2023/4/4 19:14
      * @creed Talk is cheap, show me the comment !!!
      */
-    public MediaFiles addMediaFilesToDb(Long companyId, String fileMd5, UploadFileParamsDto uploadFileParamsDto, String bucket, String objectName);
+    MediaFiles addMediaFilesToDb(Long companyId, String fileMd5, UploadFileParamsDto uploadFileParamsDto, String bucket, String objectName);
+
+    /**
+     * 文件上传前检查文件 检查文件是否存在
+     *
+     * @param fileMd5 java.lang.String
+     * @return com.goodstudy.base.model.RestResponse<java.lang.Boolean>
+     * @author Jack
+     * @date 2023/4/6 22:33
+     * @update_by Jack
+     * @update_at 2023/4/6 22:33
+     * @creed Talk is cheap, show me the comment !!!
+     */
+    RestResponse<Boolean> checkFile(String fileMd5);
+
+    /**
+     * 文件上传前检查文件 检查文件是否存在
+     *
+     * @param fileMd5 java.lang.String
+     * @param chunk   int
+     * @return com.goodstudy.base.model.RestResponse<java.lang.Boolean>
+     * @author Jack
+     * @date 2023/4/6 22:33
+     * @update_by Jack
+     * @update_at 2023/4/6 22:33
+     * @creed Talk is cheap, show me the comment !!!
+     */
+    RestResponse<Boolean> checkChunk(String fileMd5, int chunk);
+
+    /**
+     * 上传分块文件
+     *
+     * @param fileMd5            java.lang.String 文件md5
+     * @param chunk              int 分块序号
+     * @param localChunkFilePath java.lang.String 本地分块文件路径
+     * @return com.goodstudy.base.model.RestResponse
+     * @author Jack
+     * @date 2023/4/9 11:16
+     * @update_by Jack
+     * @update_at 2023/4/9 11:16
+     * @creed Talk is cheap, show me the comment !!!
+     */
+    RestResponse uploadChunk(String fileMd5, int chunk, String localChunkFilePath);
+
+
+    /**
+     * 合并分块文件
+     *
+     * @param companyId           java.lang.Long
+     * @param fileMd5             java.lang.String
+     * @param fileName            java.lang.String
+     * @param chunkTotal          int 分块总数
+     * @param uploadFileParamsDto com.goodstudy.media.model.dto.UploadFileParamsDto 上传文件参数
+     * @return com.goodstudy.base.model.RestResponse
+     * @author Jack
+     * @date 2023/4/6 22:38
+     * @update_by Jack
+     * @update_at 2023/4/6 22:38
+     * @creed Talk is cheap, show me the comment !!!
+     */
+    RestResponse mergeChunk(Long companyId, String fileMd5, String fileName, int chunkTotal, UploadFileParamsDto uploadFileParamsDto);
+
 }

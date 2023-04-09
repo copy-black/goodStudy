@@ -41,7 +41,7 @@ public class CourseTeacherController {
     }
 
     /**
-     * 创建课程教师信息接口
+     * 创建和修改课程教师信息接口
      *
      * @param courseTeacher com.goodstudy.content.model.dto.AddCourseTeacherDto
      * @return com.goodstudy.content.model.po.CourseTeacher
