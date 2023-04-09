@@ -1,5 +1,6 @@
 package com.goodstudy.content.controller;
 
+import com.goodstudy.content.model.dto.BindTeachplanMediaDto;
 import com.goodstudy.content.model.dto.SaveTeachplanDto;
 import com.goodstudy.content.model.dto.TeachplanDto;
 import com.goodstudy.content.service.TeachplanService;
@@ -109,6 +110,41 @@ public class TeachplanController {
     @PostMapping("/teachplan/movedown/{teacherplanId}")
     public void moveDownSubmit(@PathVariable Long teacherplanId) {
         teachplanService.moveDownSubmit(teacherplanId);
+    }
+
+    /**
+     * 课程计划和媒资信息绑定
+     *
+     * @param bindTeachplanMediaDto com.goodstudy.content.model.dto.BindTeachplanMediaDto
+     * @return void
+     * @author Jack
+     * @date 2023/4/9 18:16
+     * @update_by Jack
+     * @update_at 2023/4/9 18:16
+     * @creed Talk is cheap, show me the comment !!!
+     */
+    @ApiOperation(value = "课程计划和媒资信息绑定")
+    @PostMapping("/teachplan/association/media")
+    void associationMedia(@RequestBody BindTeachplanMediaDto bindTeachplanMediaDto) {
+        teachplanService.associationMedia(bindTeachplanMediaDto);
+    }
+
+
+    /**
+     * 课程计划和媒资信息解绑
+     *
+     * @param teachplanId java.lang.Long
+     * @return void
+     * @author Jack
+     * @date 2023/4/9 18:30
+     * @update_by Jack
+     * @update_at 2023/4/9 18:30
+     * @creed Talk is cheap, show me the comment !!!
+     */
+    @ApiOperation(value = "课程计划和媒资信息解绑")
+    @DeleteMapping("/teachplan/association/media/{teachPlanId}/{mediaId}")
+    void unbindMedia(@PathVariable String teachplanId, @PathVariable String mediaId) {
+        teachplanService.deleteTeachplanMedia(teachplanId, mediaId);
     }
 
 }

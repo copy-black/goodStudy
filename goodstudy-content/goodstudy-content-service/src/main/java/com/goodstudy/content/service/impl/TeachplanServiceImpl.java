@@ -3,6 +3,7 @@ package com.goodstudy.content.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.goodstudy.content.mapper.TeachplanMapper;
 import com.goodstudy.content.mapper.TeachplanMediaMapper;
+import com.goodstudy.content.model.dto.BindTeachplanMediaDto;
 import com.goodstudy.content.model.dto.SaveTeachplanDto;
 import com.goodstudy.content.model.dto.TeachplanDto;
 import com.goodstudy.content.model.po.Teachplan;
@@ -10,8 +11,10 @@ import com.goodstudy.content.model.po.TeachplanMedia;
 import com.goodstudy.content.service.TeachplanService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cglib.core.Local;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -33,6 +36,7 @@ public class TeachplanServiceImpl implements TeachplanService {
 
     @Autowired
     private TeachplanMediaMapper teachplanMediaMapper;
+
 
     @Override
     public List<TeachplanDto> findTeachplanTree(Long courseId) {
@@ -132,6 +136,49 @@ public class TeachplanServiceImpl implements TeachplanService {
         } else {
             throw new RuntimeException("该章节不存在");
         }
+    }
+
+    @Override
+    public void associationMedia(BindTeachplanMediaDto bindTeachplanMediaDto) {
+        // 课程计划id
+        Long teachplanId = bindTeachplanMediaDto.getTeachplanId();
+        // 媒资id
+        String mediaId = bindTeachplanMediaDto.getMediaId();
+
+        // 校验课程计划是否存在
+        Teachplan teachplan = teachplanMapper.selectById(teachplanId);
+        if (teachplan == null) {
+            throw new RuntimeException("课程计划不存在");
+        }
+
+        // 只允许关联叶子节点
+        Integer grade = teachplan.getGrade();
+        if (grade != 2) {
+            throw new RuntimeException("只允许关联叶子节点");
+        }
+
+        // 课程id
+        Long courseId = teachplan.getCourseId();
+
+        // 先删除原来该教学计划绑定的媒资
+        teachplanMediaMapper.delete(new LambdaQueryWrapper<TeachplanMedia>()
+                .eq(TeachplanMedia::getTeachplanId, teachplanId));
+
+        TeachplanMedia teachplanMedia = new TeachplanMedia();
+        teachplanMedia.setCourseId(courseId);
+        teachplanMedia.setMediaId(mediaId);
+        teachplanMedia.setTeachplanId(teachplanId);
+        teachplanMedia.setMediaFilename(bindTeachplanMediaDto.getFileName());
+        teachplanMedia.setCreateDate(LocalDateTime.now());
+        teachplanMediaMapper.insert(teachplanMedia);
+    }
+
+    @Override
+    public void deleteTeachplanMedia(String  teachplanId, String mediaId) {
+        // 删除课程计划媒资关联信息
+        teachplanMediaMapper.delete(new LambdaQueryWrapper<TeachplanMedia>()
+                .eq(TeachplanMedia::getTeachplanId, teachplanId)
+                .eq(TeachplanMedia::getMediaId, mediaId));
     }
 
     /**

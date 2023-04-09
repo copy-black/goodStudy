@@ -1,5 +1,6 @@
 package com.goodstudy.content.service;
 
+import com.goodstudy.content.model.dto.BindTeachplanMediaDto;
 import com.goodstudy.content.model.dto.SaveTeachplanDto;
 import com.goodstudy.content.model.dto.TeachplanDto;
 
@@ -78,4 +79,31 @@ public interface TeachplanService {
      * @creed Talk is cheap, show me the comment !!!
      */
     void moveDownSubmit(Long teacherplanId);
+
+    /**
+     * 课程计划与媒资文件绑定
+     *
+     * @param bindTeachplanMediaDto com.goodstudy.content.model.dto.BindTeachplanMediaDto
+     * @return void
+     * @author Jack
+     * @date 2023/4/9 18:16
+     * @update_by Jack
+     * @update_at 2023/4/9 18:16
+     * @creed Talk is cheap, show me the comment !!!
+     */
+    void associationMedia(BindTeachplanMediaDto bindTeachplanMediaDto);
+
+    /**
+     * 课程计划与媒资文件解绑
+     *
+     * @param teachplanId java.lang.Long
+     * @param mediaId     java.lang.String
+     * @return void
+     * @author Jack
+     * @date 2023/4/9 18:30
+     * @update_by Jack
+     * @update_at 2023/4/9 18:30
+     * @creed Talk is cheap, show me the comment !!!
+     */
+    void deleteTeachplanMedia(String teachplanId, String mediaId);
 }
