@@ -19,6 +19,19 @@ import java.io.File;
 public interface MediaFileService {
 
     /**
+     * 获得媒资文件
+     *
+     * @param mediaId java.lang.String
+     * @return com.goodstudy.media.model.po.MediaFiles
+     * @author Jack
+     * @date 2023/4/12 20:36
+     * @update_by Jack
+     * @update_at 2023/4/12 20:36
+     * @creed Talk is cheap, show me the comment !!!
+     */
+    MediaFiles getFileById(String mediaId);
+
+    /**
      * @param pageParams          分页参数
      * @param queryMediaParamsDto 查询条件
      * @return com.xuecheng.base.model.PageResult<com.xuecheng.media.model.po.MediaFiles>
