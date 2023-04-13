@@ -22,5 +22,33 @@ public interface CoursePublishService {
      * @update_at 2023/4/12 20:00
      * @creed Talk is cheap, show me the comment !!!
      */
-    public CoursePreviewDto getCoursePreviewInfo(Long courseId);
+    CoursePreviewDto getCoursePreviewInfo(Long courseId);
+
+    /**
+     * Description: 课程提交审核
+     *
+     * @param companyId java.lang.Long
+     * @param courseId  java.lang.Long
+     * @return void
+     * @author Jack
+     * @date 2023/4/13 19:55
+     * @update_by Jack
+     * @update_at 2023/4/13 19:55
+     * @creed Talk is cheap, show me the comment !!!
+     */
+    void commitAudit(Long companyId, Long courseId);
+
+    /**
+     * Description: 课程发布
+     *
+     * @param companyId java.lang.Long
+     * @param courseId  java.lang.Long
+     * @return void
+     * @author Jack
+     * @date 2023/4/13 20:43
+     * @update_by Jack
+     * @update_at 2023/4/13 20:43
+     * @creed Talk is cheap, show me the comment !!!
+     */
+    void publish(Long companyId, Long courseId);
 }
