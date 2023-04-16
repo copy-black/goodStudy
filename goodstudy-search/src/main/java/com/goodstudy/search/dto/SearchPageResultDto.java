@@ -1,6 +1,6 @@
 package com.goodstudy.search.dto;
 
-import com.xuecheng.base.model.PageResult;
+import com.goodstudy.base.model.PageResult;
 import lombok.Data;
 import lombok.ToString;
 
