@@ -16,7 +16,7 @@ import java.io.IOException;
  * @description 远程调用媒资服务的接口
  * @date 2023/2/22 10:26
  */
-@FeignClient(value = "goodstudy-media-api", configuration = {MultipartSupportConfig.class}, fallback = MediaServiceClientFallback.class)
+@FeignClient(value = "goodstudy-media-api", configuration = {MultipartSupportConfig.class}, fallback = MediaServiceClientFallbackFactory.class)
 public interface MediaServiceClient {
 
     @RequestMapping(value = "/media/upload/coursefile", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)

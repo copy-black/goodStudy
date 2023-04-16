@@ -10,10 +10,10 @@ import java.io.IOException;
  * @description TODO
  * @date 2023/2/22 11:06
  */
-public class MediaServiceClientFallback implements MediaServiceClient{
- @Override
- public String upload(MultipartFile filedata, String objectName) throws IOException {
+public class MediaServiceClientFallback implements MediaServiceClient {
+    @Override
+    public String upload(MultipartFile filedata, String objectName) throws IOException {
 
-  return null;
- }
+        return null;
+    }
 }
