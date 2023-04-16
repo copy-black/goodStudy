@@ -54,7 +54,7 @@ public interface MediaFileService {
      * @update_at 2023/4/3 23:22
      * @creed Talk is cheap, show me the comment !!!
      */
-    UploadFileResultDto uploadFile(Long companyId, UploadFileParamsDto uploadFileParamsDto, String localFilePath);
+    UploadFileResultDto uploadFile(Long companyId, UploadFileParamsDto uploadFileParamsDto, String localFilePath, String objectName);
 
     /**
      * 上传文件数据库操作
